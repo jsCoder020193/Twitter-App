@@ -28,3 +28,9 @@ Here's a walkthrough of implemented user stories:
 ![](https://github.com/jsCoder020193/Twitter-App/blob/7dac47cd0267858ace8c4609481230530d900527/ezgif.com-gif-maker%20(1).gif)
 
 ![](https://github.com/jsCoder020193/Twitter-App/blob/7dac47cd0267858ace8c4609481230530d900527/ezgif.com-gif-maker%20(2).gif)
+
+## Update
+
+- Added demo showing "User stays logged in across restarts" behaviour.
+
+![](https://github.com/jsCoder020193/Twitter-App/blob/c74072249182c07cd5bd2d97c9dd4df35bb3dfce/ezgif.com-gif-maker%20(3).gif)
