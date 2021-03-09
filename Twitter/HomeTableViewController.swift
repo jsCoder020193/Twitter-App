@@ -17,15 +17,21 @@ class HomeTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadTweets()
+        numberOfTweets = 20
+//        loadTweets()
         myRefreshControl.addTarget(self, action: #selector(loadTweets), for: .valueChanged)
         tableView.refreshControl = myRefreshControl
+        
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 150
     }
-
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        loadTweets()
+    }
+    
     @objc func loadTweets(){
-        
-        numberOfTweets = 20
-        
         let tweetsUrl = "https://api.twitter.com/1.1/statuses/home_timeline.json"
         let myParams = ["count": numberOfTweets]
         
@@ -37,7 +43,7 @@ class HomeTableViewController: UITableViewController {
             self.tableView.reloadData()
             self.myRefreshControl.endRefreshing()
         }, failure: { (Error) in
-            print("Could not get tweets")
+            print("Could not get tweets \(Error)")
         })
     }
     
@@ -70,19 +76,69 @@ class HomeTableViewController: UITableViewController {
         UserDefaults.standard.set(false, forKey: "userLoggedIn")
     }
     
+    func getTimeDifference(_ inputDateTime: String) -> String{
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "E MMM d HH:mm:ss Z yyyy"
+
+        let date1 = dateFormatter.date(from: inputDateTime)!
+        
+        let date2 = Date()
+                
+        let calendar = Calendar.current
+        let seconds = calendar.dateComponents([Calendar.Component.second], from: date1, to: date2).second
+        let minutes = calendar.dateComponents([Calendar.Component.minute], from: date1, to: date2).minute
+        let hours = calendar.dateComponents([Calendar.Component.hour], from: date1, to: date2).hour
+
+        print("\(hours!) hrs \(minutes!) mins \(seconds!) seconds ago")
+        
+        if(hours! > 0){
+            return("\(hours!) hrs ago")
+        }else if(minutes! > 0){
+            return("\(minutes!) mins ago")
+        }else{
+            return("\(seconds!) seconds ago")
+        }
+            
+        
+    }
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "tweetCell", for: indexPath) as! tweetCell
         
         let user = tweetArray[indexPath.row]["user"] as! NSDictionary
+//        Set the username label text
         cell.usernameLabel.text = user["name"] as? String
+        
+//        Set the tweetContent label text
         cell.tweetContent.text = tweetArray[indexPath.row]["text"] as? String
         
+//        Set the time label text
+        let createdAt = tweetArray[indexPath.row]["created_at"] as! String
+        
+        cell.timeLabel.text = getTimeDifference(createdAt)
+
+//        Set the user profile image
         let imageUrl = URL(string: ((user["profile_image_url_https"] as? String)!))
         let data = try? Data(contentsOf: imageUrl!)
         
         if let imageData = data{
             cell.profileImageView.image = UIImage(data: imageData)
         }
+//        Set the tweetID property
+        cell.setTweetID(tweetArray[indexPath.row]["id"] as! Int)
+        
+//        Set to red like button if true else gray for false
+        cell.setLike(tweetArray[indexPath.row]["favorited"] as! Bool)
+        
+//        Set to green like button if true else gray for false
+        cell.setRetweet(tweetArray[indexPath.row]["retweeted"] as! Bool)
+
+//        Set the count of likes label
+        cell.likeCountLabel.text = String(tweetArray[indexPath.row]["favorite_count"] as! Int)
+
+//        Set the count of retweets label
+        cell.retweetCountLabel.text = String(tweetArray[indexPath.row]["retweet_count"] as! Int)
+        
         
         return cell
     }
