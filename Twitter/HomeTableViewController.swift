@@ -13,10 +13,17 @@ class HomeTableViewController: UITableViewController {
     var tweetArray = [NSDictionary]()
     var numberOfTweets: Int!
     
+    var f: Int = 10
+    var accountDetailsDictionary: NSDictionary!
+    
     let myRefreshControl = UIRefreshControl()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+//      Call Set Account Details Method
+        setAccountDetails()
+        
         numberOfTweets = 20
 //        loadTweets()
         myRefreshControl.addTarget(self, action: #selector(loadTweets), for: .valueChanged)
@@ -31,6 +38,18 @@ class HomeTableViewController: UITableViewController {
         loadTweets()
     }
     
+    func setAccountDetails(){
+        let url = "https://api.twitter.com/1.1/account/verify_credentials.json"
+        
+        TwitterAPICaller.client?.getDictionaryRequest(url: url, parameters: ["id": 1], success: { (result) in
+  
+            self.accountDetailsDictionary = result
+
+        }, failure: { (Error) in
+            print("Error getting account data \(Error)")
+        })
+    }
+        
     @objc func loadTweets(){
         let tweetsUrl = "https://api.twitter.com/1.1/statuses/home_timeline.json"
         let myParams = ["count": numberOfTweets]
@@ -89,7 +108,7 @@ class HomeTableViewController: UITableViewController {
         let minutes = calendar.dateComponents([Calendar.Component.minute], from: date1, to: date2).minute
         let hours = calendar.dateComponents([Calendar.Component.hour], from: date1, to: date2).hour
 
-        print("\(hours!) hrs \(minutes!) mins \(seconds!) seconds ago")
+//        print("\(hours!) hrs \(minutes!) mins \(seconds!) seconds ago")
         
         if(hours! > 0){
             return("\(hours!) hrs ago")
@@ -106,6 +125,7 @@ class HomeTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "tweetCell", for: indexPath) as! tweetCell
         
         let user = tweetArray[indexPath.row]["user"] as! NSDictionary
+        
 //        Set the username label text
         cell.usernameLabel.text = user["name"] as? String
         
