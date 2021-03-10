@@ -14,16 +14,19 @@ The following **required** functionality is completed:
 
 The following **bonus** features are implemented:
 
-- [ ] When composing a tweet, user sees a countdown for the number of characters remaining for the tweet (out of 280) (2pts)
+- [X] When composing a tweet, user sees a countdown for the number of characters remaining for the tweet (out of 280) (2pts)
 - [ ] User can view their profile in a profile tab. (3pts)
 - [ ] User sees embedded images in tweet if available. (3pts)
+- [X] Display how old a tweet is
+- [X] Display count of retweets and favourites next to icons
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
-
+![](twitter-part-2-demo-1.gif)
+![](twitter-part-2-demo-2.gif)
+![](twitter-part-2-demo-3.gif)
 
 
 # Twitter - Part I
